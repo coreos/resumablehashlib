@@ -1,0 +1,15 @@
+Metadata-Version: 1.0
+Name: resumablehashlib
+Version: 20081119
+Summary: Secure hash and message digest algorithm library
+Home-page: http://github.com/coreos/resumablehashlib
+Author: Jake Moshenko
+Author-email: jake.moshenko@coreos.com
+License: PSF license
+Description: Description: This is a fork of the backported
+        hashlib from python 2.5, originally written by
+        Gregory P. Smith, which aims to open the internal
+        state of the sha256 library to make it resumable.
+        It will make no attempt to defer to a local openssl
+        version like the original.
+Platform: UNKNOWN
