@@ -31,14 +31,14 @@ def prepare_hashlib_Extensions():
 
     exts = []
 
-    exts.append( Extension('_sha', ['shamodule.c']) )
-    exts.append( Extension('_md5',
+    exts.append( Extension('_rhsha', ['shamodule.c']) )
+    exts.append( Extension('_rhmd5',
                     sources = ['md5module.c', 'md5.c'],
                     depends = ['md5.h']) )
 
     # OpenSSL doesn't do these until 0.9.8 so we'll bring our own
-    exts.append( Extension('_sha256', ['sha256module.c']) )
-    exts.append( Extension('_sha512', ['sha512module.c']) )
+    exts.append( Extension('_rhsha256', ['sha256module.c']) )
+    exts.append( Extension('_rhsha512', ['sha512module.c']) )
 
     def prependModules(filename):
         return os.path.join('Modules', filename)

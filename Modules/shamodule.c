@@ -491,7 +491,7 @@ static PyGetSetDef SHA_getseters[] = {
 static PyTypeObject SHAtype = {
     PyObject_HEAD_INIT(NULL)
     0,			/*ob_size*/
-    "_sha.sha",		/*tp_name*/
+    "_rhsha.sha",		/*tp_name*/
     sizeof(SHAobject),	/*tp_size*/
     0,			/*tp_itemsize*/
     /* methods */
@@ -573,21 +573,21 @@ static struct PyMethodDef SHA_functions[] = {
 #define insint(n,v) { PyModule_AddIntConstant(m,n,v); }
 
 PyMODINIT_FUNC
-init_sha(void)
+init_rhsha(void)
 {
     PyObject *m;
 
     SHAtype.ob_type = &PyType_Type;
     if (PyType_Ready(&SHAtype) < 0)
         return;
-    m = Py_InitModule("_sha", SHA_functions);
+    m = Py_InitModule("_rhsha", SHA_functions);
     if (m == NULL)
 	return;
 
     /* Add some symbolic constants to the module */
     insint("blocksize", 1);  /* For future use, in case some hash
                                 functions require an integral number of
-                                blocks */ 
+                                blocks */
     insint("digestsize", 20);
     insint("digest_size", 20);
 }

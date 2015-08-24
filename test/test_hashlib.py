@@ -28,7 +28,7 @@ class HashLibTestCase(unittest.TestCase):
 
     def test_unknown_hash(self):
         try:
-            hashlib.new('spam spam spam spam spam')
+            resumablehashlib.new('spam spam spam spam spam')
         except ValueError:
             pass
         else:
@@ -36,7 +36,7 @@ class HashLibTestCase(unittest.TestCase):
 
     def test_hexdigest(self):
         for name in self.supported_hash_names:
-            h = hashlib.new(name)
+            h = resumablehashlib.new(name)
             self.assert_(hexstr(h.digest()) == h.hexdigest())
 
 
@@ -46,22 +46,22 @@ class HashLibTestCase(unittest.TestCase):
         cees = 'c' * 126
 
         for name in self.supported_hash_names:
-            m1 = hashlib.new(name)
+            m1 = resumablehashlib.new(name)
             m1.update(aas)
             m1.update(bees)
             m1.update(cees)
 
-            m2 = hashlib.new(name)
+            m2 = resumablehashlib.new(name)
             m2.update(aas + bees + cees)
             self.assertEqual(m1.digest(), m2.digest())
 
 
     def check(self, name, data, digest):
         # test the direct constructors
-        computed = getattr(hashlib, name)(data).hexdigest()
+        computed = getattr(resumablehashlib, name)(data).hexdigest()
         self.assert_(computed == digest)
         # test the general new() interface
-        computed = hashlib.new(name, data).hexdigest()
+        computed = resumablehashlib.new(name, data).hexdigest()
         self.assert_(computed == digest)
 
 
