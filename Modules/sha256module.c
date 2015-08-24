@@ -622,7 +622,7 @@ static PyMemberDef SHA_members[] = {
 static PyTypeObject SHA224type = {
     PyObject_HEAD_INIT(NULL)
     0,			/*ob_size*/
-    "_sha256.sha224",	/*tp_name*/
+    "_rhsha256.sha224",	/*tp_name*/
     sizeof(SHAobject),	/*tp_size*/
     0,			/*tp_itemsize*/
     /* methods */
@@ -657,7 +657,7 @@ static PyTypeObject SHA224type = {
 static PyTypeObject SHA256type = {
     PyObject_HEAD_INIT(NULL)
     0,			/*ob_size*/
-    "_sha256.sha256",	/*tp_name*/
+    "_rhsha256.sha256",	/*tp_name*/
     sizeof(SHAobject),	/*tp_size*/
     0,			/*tp_itemsize*/
     /* methods */
@@ -769,7 +769,7 @@ static struct PyMethodDef SHA_functions[] = {
 #define insint(n,v) { PyModule_AddIntConstant(m,n,v); }
 
 PyMODINIT_FUNC
-init_sha256(void)
+init_rhsha256(void)
 {
     PyObject *m;
 
@@ -779,7 +779,7 @@ init_sha256(void)
     SHA256type.ob_type = &PyType_Type;
     if (PyType_Ready(&SHA256type) < 0)
         return;
-    m = Py_InitModule("_sha256", SHA_functions);
+    m = Py_InitModule("_rhsha256", SHA_functions);
     if (m == NULL)
 	return;
 }

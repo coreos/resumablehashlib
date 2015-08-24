@@ -4,7 +4,7 @@
 #  Licensed to PSF under a Contributor Agreement.
 #
 
-__doc__ = """hashlib module - A common interface to many hash functions.
+__doc__ = """resumablehashlib module - A common interface to many hash functions.
 
 new(name, string='') - returns a new hash object implementing the
                        given hash function; initializing the hash
@@ -40,8 +40,8 @@ Hash objects have these methods:
 For example, to obtain the digest of the string 'Nobody inspects the
 spammish repetition':
 
-    >>> import hashlib
-    >>> m = hashlib.md5()
+    >>> import resumablehashlib
+    >>> m = resumablehashlib.md5()
     >>> m.update("Nobody inspects")
     >>> m.update(" the spammish repetition")
     >>> m.digest()
@@ -49,7 +49,7 @@ spammish repetition':
 
 More condensed:
 
-    >>> hashlib.sha224("Nobody inspects the spammish repetition").hexdigest()
+    >>> resumablehashlib.sha224("Nobody inspects the spammish repetition").hexdigest()
     'a4337bc45a8fc544c03f52dc550cd6e1e87021bc896588bd79e901e2'
 
 """
@@ -57,25 +57,25 @@ More condensed:
 
 def __get_builtin_constructor(name):
     if name in ('SHA1', 'sha1'):
-        import _sha
-        return _sha.new
+        import _rhsha
+        return _rhsha.new
     elif name in ('MD5', 'md5'):
-        import _md5
-        return _md5.new
+        import _rhmd5
+        return _rhmd5.new
     elif name in ('SHA256', 'sha256', 'SHA224', 'sha224'):
-        import _sha256
+        import _rhsha256
         bs = name[3:]
         if bs == '256':
-            return _sha256.sha256
+            return _rhsha256.sha256
         elif bs == '224':
-            return _sha256.sha224
+            return _rhsha256.sha224
     elif name in ('SHA512', 'sha512', 'SHA384', 'sha384'):
-        import _sha512
+        import _rhsha512
         bs = name[3:]
         if bs == '512':
-            return _sha512.sha512
+            return _rhsha512.sha512
         elif bs == '384':
-            return _sha512.sha384
+            return _rhsha512.sha384
 
     raise ValueError, "unsupported hash type"
 
@@ -91,14 +91,8 @@ def __hash_new(name, string=''):
     """new(name, string='') - Return a new hashing object using the named algorithm;
     optionally initialized with a string.
     """
-    try:
-        return _hashlib.new(name, string)
-    except ValueError:
-        # If the _hashlib module (OpenSSL) doesn't support the named
-        # hash, try using our builtin implementations.
-        # This allows for SHA224/256 and SHA384/512 support even though
-        # the OpenSSL library prior to 0.9.8 doesn't provide them.
-        return __get_builtin_constructor(name)(string)
+    return __get_builtin_constructor(name)(string)
+
 
 # We don't have the _hashlib OpenSSL module?
 # use the built in legacy interfaces via a wrapper function

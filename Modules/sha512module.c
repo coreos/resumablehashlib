@@ -78,7 +78,7 @@ static void longReverse(SHA_INT64 *buffer, int byteCount, int Endianness)
 		((unsigned char*)buffer)[5] = (unsigned char)(value >> 16) & 0xff;
 		((unsigned char*)buffer)[6] = (unsigned char)(value >>  8) & 0xff;
 		((unsigned char*)buffer)[7] = (unsigned char)(value      ) & 0xff;
-        
+
 		buffer++;
     }
 }
@@ -124,7 +124,7 @@ static void SHAcopy(SHAobject *src, SHAobject *dest)
     ( ((((x) & 0xFFFFFFFFFFFFFFFFULL)>>((unsigned PY_LONG_LONG)(y) & 63)) | \
       ((x)<<((unsigned PY_LONG_LONG)(64-((y) & 63))))) & 0xFFFFFFFFFFFFFFFFULL)
 #define Ch(x,y,z)       (z ^ (x & (y ^ z)))
-#define Maj(x,y,z)      (((x | y) & z) | (x & y)) 
+#define Maj(x,y,z)      (((x | y) & z) | (x & y))
 #define S(x, n)         ROR64((x),(n))
 #define R(x, n)         (((x) & 0xFFFFFFFFFFFFFFFFULL) >> ((unsigned PY_LONG_LONG)n))
 #define Sigma0(x)       (S(x, 28) ^ S(x, 34) ^ S(x, 39))
@@ -237,8 +237,8 @@ sha512_transform(SHAobject *sha_info)
     RND(S[2],S[3],S[4],S[5],S[6],S[7],S[0],S[1],78,0x5fcb6fab3ad6faecULL);
     RND(S[1],S[2],S[3],S[4],S[5],S[6],S[7],S[0],79,0x6c44198c4a475817ULL);
 
-#undef RND     
-    
+#undef RND
+
     /* feedback */
     for (i = 0; i < 8; i++) {
         sha_info->digest[i] = sha_info->digest[i] + S[i];
@@ -604,7 +604,7 @@ static PyMemberDef SHA_members[] = {
 static PyTypeObject SHA384type = {
     PyObject_HEAD_INIT(NULL)
     0,			/*ob_size*/
-    "_sha512.sha384",	/*tp_name*/
+    "_rhsha512.sha384",	/*tp_name*/
     sizeof(SHAobject),	/*tp_size*/
     0,			/*tp_itemsize*/
     /* methods */
@@ -639,7 +639,7 @@ static PyTypeObject SHA384type = {
 static PyTypeObject SHA512type = {
     PyObject_HEAD_INIT(NULL)
     0,			/*ob_size*/
-    "_sha512.sha512",	/*tp_name*/
+    "_rhsha512.sha512",	/*tp_name*/
     sizeof(SHAobject),	/*tp_size*/
     0,			/*tp_itemsize*/
     /* methods */
@@ -751,7 +751,7 @@ static struct PyMethodDef SHA_functions[] = {
 #define insint(n,v) { PyModule_AddIntConstant(m,n,v); }
 
 PyMODINIT_FUNC
-init_sha512(void)
+init_rhsha512(void)
 {
     PyObject *m;
 
@@ -761,7 +761,7 @@ init_sha512(void)
     SHA512type.ob_type = &PyType_Type;
     if (PyType_Ready(&SHA512type) < 0)
         return;
-    m = Py_InitModule("_sha512", SHA_functions);
+    m = Py_InitModule("_rhsha512", SHA_functions);
     if (m == NULL)
 	return;
 }
