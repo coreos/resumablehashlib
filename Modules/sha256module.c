@@ -503,9 +503,12 @@ SHA256_state(SHAobject *self, PyObject *unused)
     PyObject * state = PyList_New(6);
 
     PyObject * digest = PyList_New(8);
-    for (int i = 0; i < 8; i++) {
+
+    int i;
+    for (i = 0; i < 8; i++) {
         PyList_SetItem(digest, i, PyInt_FromLong(self->digest[i]));
     }
+
     PyList_SetItem(state, 0, digest);
 
     PyList_SetItem(state, 1, PyInt_FromLong(self->count_lo));
@@ -542,7 +545,8 @@ SHA256_set_state(SHAobject *self, PyObject *statelist)
         return NULL;
     }
 
-    for (int i = 0; i < 8; i++) {
+    int i;
+    for (i = 0; i < 8; i++) {
         self->digest[i] = (SHA_INT32)PyInt_AsLong(PyList_GetItem(digest, i));
     }
 
