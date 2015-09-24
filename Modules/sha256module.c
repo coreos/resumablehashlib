@@ -556,6 +556,7 @@ SHA256_set_state(SHAobject *self, PyObject *statelist)
     PyObject * dataObj = PyList_GetItem(statelist, 3);
     size_t bytesToCopy = min(SHA_BLOCKSIZE, PyString_Size(dataObj));
     memcpy(self->data, PyString_AsString(dataObj), bytesToCopy);
+    self->local = PyString_Size(dataObj);
 
     int candidateEndianness = (int)PyInt_AsLong(PyList_GetItem(statelist, 4));
     if (candidateEndianness != PCT_BIG_ENDIAN && candidateEndianness != PCT_LITTLE_ENDIAN) {
