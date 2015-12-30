@@ -26,6 +26,8 @@
 #define PCT_LITTLE_ENDIAN 1
 #define PCT_BIG_ENDIAN 0
 
+#define min(a,b) ({ __typeof__ (a) _a = (a); __typeof__ (b) _b = (b); _a < _b ? _a : _b; })
+
 /* Some useful types */
 
 typedef unsigned char SHA_BYTE;
@@ -273,6 +275,80 @@ sha_update(SHAobject *sha_info, SHA_BYTE *buffer, int count)
     sha_info->local = count;
 }
 
+PyDoc_STRVAR(SHA_state__doc__,
+"Get back a list representing the internal state.");
+
+static PyObject *
+SHA_state(SHAobject *self, PyObject *unused)
+{
+    PyObject * state = PyList_New(5);
+
+    PyObject * digest = PyList_New(5);
+
+    int i;
+    for (i = 0; i < 5; i++) {
+        PyList_SetItem(digest, i, PyInt_FromLong(self->digest[i]));
+    }
+
+    PyList_SetItem(state, 0, digest);
+
+    PyList_SetItem(state, 1, PyInt_FromLong(self->count_lo));
+    PyList_SetItem(state, 2, PyInt_FromLong(self->count_hi));
+
+    PyObject * data = PyString_FromStringAndSize(self->data, self->local);
+    PyList_SetItem(state, 3, data);
+
+    PyList_SetItem(state, 4, PyInt_FromLong(self->Endianness));
+
+    return state;
+}
+
+PyDoc_STRVAR(SHA_set_state__doc__,
+"Restore the internal state of the hash using the supplied list.");
+
+static PyObject *
+SHA_set_state(SHAobject *self, PyObject *statelist)
+{
+    if (!PyObject_TypeCheck(statelist, &PyList_Type)) {
+        PyErr_SetString(PyExc_ValueError, "Argument must be a state list.");
+        return NULL;
+    }
+
+    if (PyList_Size(statelist) != 5) {
+        PyErr_SetString(PyExc_ValueError, "State list must have a length of 5.");
+        return NULL;
+    }
+
+    PyObject * digest = PyList_GetItem(statelist, 0);
+    if (PyList_Size(digest) != 5) {
+        PyErr_SetString(PyExc_ValueError, "First list argument must be a list with 5 values.");
+        return NULL;
+    }
+
+    int i;
+    for (i = 0; i < 5; i++) {
+        self->digest[i] = (SHA_INT32)PyInt_AsLong(PyList_GetItem(digest, i));
+    }
+
+    self->count_lo = (SHA_INT32)PyInt_AsLong(PyList_GetItem(statelist, 1));
+    self->count_hi = (SHA_INT32)PyInt_AsLong(PyList_GetItem(statelist, 2));
+
+    PyObject * dataObj = PyList_GetItem(statelist, 3);
+    size_t bytesToCopy = min(SHA_BLOCKSIZE, PyString_Size(dataObj));
+    memcpy(self->data, PyString_AsString(dataObj), bytesToCopy);
+    self->local = PyString_Size(dataObj);
+
+    int candidateEndianness = (int)PyInt_AsLong(PyList_GetItem(statelist, 4));
+    if (candidateEndianness != PCT_BIG_ENDIAN && candidateEndianness != PCT_LITTLE_ENDIAN) {
+        PyErr_SetString(PyExc_ValueError, "Invalid endianness.");
+        return NULL;
+    }
+    self->Endianness = candidateEndianness;
+
+    return Py_None;
+}
+
+
 /* finish computing the SHA digest */
 
 static void
@@ -445,6 +521,8 @@ static PyMethodDef SHA_methods[] = {
     {"digest",	  (PyCFunction)SHA_digest,    METH_NOARGS,  SHA_digest__doc__},
     {"hexdigest", (PyCFunction)SHA_hexdigest, METH_NOARGS,  SHA_hexdigest__doc__},
     {"update",	  (PyCFunction)SHA_update,    METH_VARARGS, SHA_update__doc__},
+    {"state",     (PyCFunction)SHA_state,     METH_NOARGS,  SHA_state__doc__},
+    {"set_state", (PyCFunction)SHA_set_state, METH_O,       SHA_set_state__doc__},
     {NULL,	  NULL}		/* sentinel */
 };
 
