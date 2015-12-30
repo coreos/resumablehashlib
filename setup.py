@@ -1,7 +1,7 @@
 # setup.py for hashlib standalone for Python versions < 2.5
 #
 
-__version__ = "20081119"
+__version__ = "20151230"
 
 import sys, os, re
 
